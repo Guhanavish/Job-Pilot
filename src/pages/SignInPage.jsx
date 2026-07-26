@@ -19,13 +19,19 @@ export default function SignInPage() {
   const [step, setStep] = useState(user ? 'interests' : 'signin');
   const [selected, setSelected] = useState(user?.interests || []);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   if (user && step === 'signin') setStep('interests');
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    await signInWithGoogle();
-    setStep('interests');
+    setError(null);
+    try {
+      await signInWithGoogle();
+      setStep('interests');
+    } catch (err) {
+      setError(err.message || 'Sign in failed. Make sure Google Auth is enabled in Firebase Console.');
+    }
     setLoading(false);
   };
 
@@ -110,6 +116,12 @@ export default function SignInPage() {
           <p className="text-sm text-surface-500 mb-8">
             Sign in to save jobs, get alerts, and personalize your search.
           </p>
+
+          {error && (
+            <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700 text-left">
+              {error}
+            </div>
+          )}
 
           <button
             onClick={handleGoogleSignIn}

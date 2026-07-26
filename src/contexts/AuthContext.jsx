@@ -23,23 +23,19 @@ export function AuthProvider({ children }) {
 
   const signInWithGoogle = useCallback(async () => {
     if (hasFirebaseConfig && auth && provider) {
-      try {
-        const { signInWithPopup } = await import('firebase/auth');
-        const result = await signInWithPopup(auth, provider);
-        const fbUser = {
-          uid: result.user.uid,
-          name: result.user.displayName || 'User',
-          email: result.user.email,
-          photoURL: result.user.photoURL,
-          interests: [],
-          joinDate: new Date().toISOString(),
-        };
-        storeUser(fbUser);
-        setUser(fbUser);
-        return fbUser;
-      } catch (err) {
-        console.warn('Firebase auth failed, falling back to demo:', err);
-      }
+      const { signInWithPopup } = await import('firebase/auth');
+      const result = await signInWithPopup(auth, provider);
+      const fbUser = {
+        uid: result.user.uid,
+        name: result.user.displayName || 'User',
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+        interests: [],
+        joinDate: new Date().toISOString(),
+      };
+      storeUser(fbUser);
+      setUser(fbUser);
+      return fbUser;
     }
     const demoUser = {
       uid: generateId(),
